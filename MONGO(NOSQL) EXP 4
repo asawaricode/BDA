@@ -1,0 +1,171 @@
+### Experiment 4 — Complete MongoDB Practical Code
+
+Follow this in the exact order in your practical exam. This version covers database selection, collection creation, inserting documents, displaying records, updating, deleting, and the MapReduce program from your journal.
+
+Important: All commands below are for `mongosh`, not the normal terminal. First, open your terminal and run `mongosh`. Once the MongoDB prompt appears, execute the commands below one section at a time.
+
+### Part A — Basic MongoDB commands
+
+### Step 1: Select the database
+
+```javascript
+use companydb
+```
+
+### Step 2: Insert documents into `staff`
+
+```javascript
+db.staff.insertMany([
+  {name: "Amit", age: 25, department: "IT"},
+  {name: "Neha", age: 22, department: "HR"},
+  {name: "Rahul", age: 24, department: "IT"}
+])
+```
+
+MongoDB automatically creates the `staff` collection if it does not exist.
+
+### Step 3: Display all documents
+
+```javascript
+db.staff.find()
+```
+
+### Step 4: Update one document
+
+```javascript
+db.staff.updateOne(
+  {name: "Amit"},
+  {$set: {age: 26}}
+)
+```
+
+### Step 5: Verify the updated document
+
+```javascript
+db.staff.find({name: "Amit"})
+```
+
+Amit's age should now be `26`.
+
+### Step 6: Delete one document
+
+```javascript
+db.staff.deleteOne({name: "Rahul"})
+```
+
+### Step 7: Verify deletion and list the collection
+
+```javascript
+db.staff.find()
+show collections
+```
+
+### Part B — MapReduce program (from your journal)
+
+This program finds the maximum marks in each section.
+
+### Step 1: Insert the sample data
+
+```javascript
+db.marks.insertMany([
+  {id: 1, sec: "A", marks: 80},
+  {id: 2, sec: "A", marks: 90},
+  {id: 3, sec: "B", marks: 99},
+  {id: 4, sec: "B", marks: 95},
+  {id: 5, sec: "C", marks: 90}
+])
+```
+
+### Step 2: Define the Map function
+
+```javascript
+var map = function() {
+  emit(this.sec, this.marks);
+};
+```
+
+### Step 3: Define the Reduce function
+
+```javascript
+var reduce = function(sec, marks) {
+  return Math.max.apply(null, marks);
+};
+```
+
+### Step 4: Execute MapReduce
+
+```javascript
+db.marks.mapReduce(
+  map,
+  reduce,
+  {out: "section_max"}
+)
+```
+
+### Step 5: Display the final result
+
+```javascript
+db.section_max.find()
+```
+
+Expected logical output:
+
+```text
+{ _id: "A", value: 90 }
+{ _id: "B", value: 99 }
+{ _id: "C", value: 90 }
+```
+
+What to explain in the exam:
+
+* `emit(this.sec, this.marks)` groups marks by section.
+
+* `reduce()` calculates the maximum marks in each group.
+
+* `{out: "section_max"}` stores the results in a new collection.
+
+Version warning: The `mapReduce()` API is deprecated in older supported versions and removed in MongoDB 8.0. If your lab uses a version that does not support it, use the following modern alternative to produce the same result:
+
+```javascript
+db.marks.aggregate([
+  {
+    $group: {
+      _id: "$sec",
+      maxMarks: {$max: "$marks"}
+    }
+  },
+  {
+    $out: "section_max"
+  }
+])
+```
+
+Then run:
+
+```javascript
+db.section_max.find()
+```
+
+Use the MapReduce version if your examiner specifically expects the journal's program and your lab supports it.
+
+### Part C — Installation and execution checklist
+
+Before your practical, remember this sequence:
+
+* Install MongoDB Community Server and `mongosh`.
+
+* Start the MongoDB server.
+
+* Open the terminal and run `mongosh`.
+
+* Select `companydb`.
+
+* Perform the `staff` CRUD operations.
+
+* Insert the `marks` data and execute MapReduce if supported.
+
+* Display the results and explain the conclusion.
+
+mongosh
+use companydb
+

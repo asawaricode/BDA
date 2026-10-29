@@ -1,0 +1,43 @@
+from collections import defaultdict
+
+text = """Big data is powerful and big data is scalable.
+MapReduce makes big data processing very easy.
+Hadoop and MapReduce are great for big data."""
+
+# Mapper Function
+def map_function(text):
+    mapped = []
+    for line in text.split("\n"):
+        words = line.lower().replace(".", "").replace(",", "").split()
+        for word in words:
+            mapped.append((word, 1))
+    return mapped
+
+# Shuffle Function
+def shuffle_function(mapped):
+    grouped = defaultdict(list)
+    for key, value in mapped:
+        grouped[key].append(value)
+    return grouped
+
+# Reducer Function
+def reduce_function(key, values):
+    return (key, sum(values))
+
+# Map Phase
+mapped_output = map_function(text)
+
+print("Mapped Output:")
+for item in mapped_output:
+    print(item)
+
+# Shuffle Phase
+grouped_output = shuffle_function(mapped_output)
+
+# Reduce Phase
+print("\nReduced Output:")
+reduced_output = []
+for key in sorted(grouped_output.keys()):
+    result = reduce_function(key, grouped_output[key])
+    reduced_output.append(result)
+    print(result)

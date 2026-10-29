@@ -1,0 +1,102 @@
+
+
+### 1\. Create students
+
+```cypher
+CREATE
+(s1:Student {id: 101, name: "Srushti", age: 20}),
+(s2:Student {id: 102, name: "Archita", age: 21}),
+(s3:Student {id: 103, name: "Anjali", age: 19}),
+(s4:Student {id: 104, name: "Manali", age: 22}),
+(s5:Student {id: 105, name: "Aditi", age: 20});
+```
+
+### 2\. Create subjects
+
+```cypher
+CREATE
+(s1:Subject {id: 201, name: "CSL", courseCode: "CSL101"}),
+(s2:Subject {id: 202, name: "NLP", courseCode: "NLP201"}),
+(s3:Subject {id: 203, name: "ML", courseCode: "ML301"}),
+(s4:Subject {id: 204, name: "ARVR", courseCode: "ARVR401"}),
+(s5:Subject {id: 205, name: "BDA", courseCode: "BDA501"});
+```
+
+### 3\. Display nodes
+
+```cypher
+MATCH (n:Student)
+RETURN n;
+```
+
+```cypher
+MATCH (n:Subject)
+RETURN n;
+```
+
+### 4\. Create relationships
+
+```cypher
+MATCH
+(s1:Student {name: "Srushti"}),
+(s2:Student {name: "Archita"}),
+(s3:Student {name: "Anjali"}),
+(s4:Student {name: "Manali"}),
+(s5:Student {name: "Aditi"}),
+(t1:Subject {name: "CSL"}),
+(t2:Subject {name: "NLP"}),
+(t3:Subject {name: "ML"}),
+(t4:Subject {name: "ARVR"}),
+(t5:Subject {name: "BDA"})
+CREATE
+(s1)-[:ENROLLED_IN]->(t1),
+(s2)-[:ENROLLED_IN]->(t2),
+(s3)-[:ENROLLED_IN]->(t3),
+(s4)-[:ENROLLED_IN]->(t4),
+(s5)-[:ENROLLED_IN]->(t5);
+```
+
+### 5\. Update Archita's age
+
+```cypher
+MATCH (s:Student {name: "Archita"})
+SET s.age = 22
+RETURN s;
+```
+
+### 6\. Display relationships
+
+```cypher
+MATCH p=()-[:ENROLLED_IN]->()
+RETURN p;
+```
+
+### 7\. Delete Manali
+
+```cypher
+MATCH (s:Student {name: "Manali"})
+DETACH DELETE s;
+```
+
+### 8\. Display final graph
+
+```cypher
+MATCH (n)
+RETURN n;
+```
+
+Meanings to remember
+
+| Command          | Meaning                              |
+| ---------------- | ------------------------------------ |
+| CREATE           | Creates nodes or relationships       |
+| MATCH            | Finds nodes or graph patterns        |
+| SET              | Adds or updates a property           |
+| RETURN           | Displays results                     |
+| DETACH DELETE    | Deletes a node and its relationships |
+| ENROLLED_IN      | Relationship type                    |
+| Student, Subject | Node labels                          |
+| name, age, id    | Properties                           |
+| ()               | Node pattern                         |
+| []               | Relationship pattern                 |
+| ->               | Relationship direction               |

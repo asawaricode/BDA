@@ -1,0 +1,52 @@
+
+class BloomFilter:
+    def __init__(self, size):
+        self.size = size
+        self.bit_array = [0] * size
+
+    def h1(self, x):
+        return x % self.size
+
+    def h2(self, x):
+        return (2 * x + 6) % self.size
+
+    def insert(self, x):
+        p1 = self.h1(x)
+        p2 = self.h2(x)
+        self.bit_array[p1] = 1
+        self.bit_array[p2] = 1
+
+    def search(self, x):
+        p1 = self.h1(x)
+        p2 = self.h2(x)
+
+        if self.bit_array[p1] == 1 and self.bit_array[p2] == 1:
+            return True
+        else:
+            return False
+
+
+print("----- BLOOM FILTER -----")
+
+m = int(input("Enter size of Bloom Filter: "))
+
+bloom = BloomFilter(m)
+
+n = int(input("Enter number of elements to insert: "))
+
+for i in range(n):
+    x = int(input("Enter element: "))
+    bloom.insert(x)
+
+print("\nFinal Bloom Filter:")
+print(bloom.bit_array)
+
+q = int(input("\nEnter number of elements to check: "))
+
+for i in range(q):
+    x = int(input("Enter element to check: "))
+
+    if bloom.search(x):
+        print(x, "may be present in Bloom Filter.")
+    else:
+        print(x, "is NOT present in Bloom Filter.")

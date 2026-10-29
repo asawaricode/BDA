@@ -1,0 +1,14 @@
+install.packages("igraph")
+library(igraph)
+# Create a simple social network
+edges <- data.frame(
+)
+from = c("A", "A", "B", "B", "C", "D", "D", "E", "F", "G"),
+to = c("B", "C", "C", "D", "D", "E", "F", "F", "G", "H")
+# Create the network
+g <- graph_from_data_frame(edges, directed = FALSE)
+# Display the network
+plot(g)
+# Apply Girvan-Newman algorithm
+communities <- cluster_edge_betweenness(g) # Display communities
+print(communities)
